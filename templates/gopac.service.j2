@@ -1,0 +1,19 @@
+[Unit]
+Description=gopac - proxy auto configurator
+Documentation=https://github.com/vayw/gopac
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User={{ gopac_user }}
+Type=simple
+ExecStart={{ gopac_bin_path }} -address {{ gopac_ip | default(ansible_default_ipv4.address) }} -port {{ gopac_port }} -proxy-address {{ gopac_proxy_address }} -proxy-port {{ gopac_proxy_port }} -proxy-scheme {{ gopac_proxy_scheme | default("SOCKS5") }} -domains-file {{ gopac_domains_list }}
+Restart=on-failure
+RestartSec=3
+StartLimitInterval=30
+
+WorkingDirectory={{ gopac_data_dir }}
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

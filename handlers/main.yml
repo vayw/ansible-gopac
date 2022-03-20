@@ -1,0 +1,10 @@
+---
+# handlers file for wireguard
+- name: gopac_reload_systemd
+  systemd:
+    daemon_reload: yes
+
+- name: gopac_restart_service
+  systemd:
+    name: "{{ gopac_service_name }}"
+    state: restarted

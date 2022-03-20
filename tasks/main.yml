@@ -1,0 +1,64 @@
+---
+- name: create user
+  ansible.builtin.user:
+    name: "{{ gopac_user }}"
+    home: "{{ gopac_data_dir }}"
+    create_home: true
+    state: present
+    comment: gopac system user
+
+- name: create bin directory
+  ansible.builtin.file:
+    path: "{{ gopac_bin_dir }}"
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+- name: download binary
+  ansible.builtin.get_url:
+    url: "{{ gopac_download_url }}"
+    dest: "{{ gopac_bin_path }}"
+    owner: root
+    group: root
+    mode: "0555"
+  notify:
+    - gopac_restart_service
+
+- name: enable access to gopac
+  ansible.posix.firewalld:
+    port: "{{ gopac_port }}/tcp"
+    permanent: yes
+    state: enabled
+    immediate: yes
+    zone: "{{ gopac_firewalld_zone }}"
+
+- name: render service file
+  ansible.builtin.template:
+    src: gopac.service.j2
+    dest: "{{ gopac_service_file }}"
+    owner: root
+    group: root
+    mode: '644'
+  notify:
+    - gopac_reload_systemd
+    - gopac_restart_service
+
+- name: render config file
+  ansible.builtin.template:
+    src: gopac.conf.json.j2
+    dest: "{{ gopac_domains_list }}"
+    owner: "{{ gopac_user }}"
+    group: "{{ gopac_user }}"
+    mode: '644'
+  notify:
+    - gopac_restart_service
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: enable gopac service
+  ansible.builtin.systemd:
+    name: "{{ gopac_service_name }}"
+    enabled: yes
+    state: started
