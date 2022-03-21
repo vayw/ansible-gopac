@@ -47,7 +47,7 @@
 - name: render config file
   ansible.builtin.template:
     src: gopac.conf.json.j2
-    dest: "{{ gopac_domains_list }}"
+    dest: "{{ gopac_config }}"
     owner: "{{ gopac_user }}"
     group: "{{ gopac_user }}"
     mode: '644'

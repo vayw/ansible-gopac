@@ -2,8 +2,8 @@
 # defaults file for gopac
 # gopac_ip: "{{ ansible_default_ipv4.address }}"
 gopac_port: 6034
-gopac_version: 0.3
-gopac_download_url: "https://github.com/vayw/gopac/releases/download/{{ gopac_version }}/gopac"
+gopac_version: 0.7
+gopac_download_url: "https://github.com/vayw/gopac/releases/download/{{ gopac_version }}/gopac-{{ ansible_architecture }}"
 gopac_bin_dir: "/usr/local/bin"
 gopac_bin_name: "gopac"
 gopac_bin_path: "{{ gopac_bin_dir }}/{{ gopac_bin_name }}"
@@ -13,6 +13,6 @@ gopac_service_file: "/etc/systemd/system/{{ gopac_service_name }}.service"
 
 gopac_user: gopac
 gopac_data_dir: "/var/lib/gopac"
-gopac_domains_list: "{{ gopac_data_dir }}/gopac.conf.json"
+gopac_config: "{{ gopac_data_dir }}/gopac.conf.json"
 
 gopac_firewalld_zone: internal
