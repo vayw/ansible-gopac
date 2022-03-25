@@ -45,6 +45,7 @@
     - gopac_restart_service
 
 - name: render config file
+  tags: [gopac_domains]
   ansible.builtin.template:
     src: gopac.conf.json.j2
     dest: "{{ gopac_config }}"
